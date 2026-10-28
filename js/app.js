@@ -29,8 +29,8 @@ async function connect() {
     const placement = (await frame.getContext())?.placement?.code;
     if (placement && placement !== 'app.homepage') {
       $('btnFull').hidden = false;
-      $('btnFull').addEventListener('click', () => frame.openHomepage({}));
-      frame.openHomepage({});
+      $('btnFull').addEventListener('click', () => frame.openHomepage({ blank: false }));
+      frame.openHomepage({ blank: false });
     }
   } catch { /* без домашней страницы остаёмся в панели */ }
   try {
