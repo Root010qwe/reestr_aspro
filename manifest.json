@@ -3,7 +3,7 @@
   "scopes": [
     {
       "code": "customlists",
-      "permission": "read"
+      "permission": "full"
     },
     {
       "code": "user.me",

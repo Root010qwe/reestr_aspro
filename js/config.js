@@ -21,6 +21,9 @@ export const DEFAULTS = {
     },
   },
   projects: { 46: 'КазГАУ', 54: 'КазГау | ФортДиалог' },
+  company: { our_inns: ['1686032615'], our_names: ['Нью Бренд'] },
+  // приём документов: Worker с загрузкой в Nextcloud и ИИ-разбором (worker/reestr-api.js); пусто — без загрузки файла
+  intake: { api: 'https://reestr-api.trinos-881.workers.dev', ocr: true },
   rules: {
     stale_days: 14,          // документ «на проверке» или «ожидает подписи» дольше — тревога
     today: null,             // для тестов: 'YYYY-MM-DD'

@@ -55,6 +55,22 @@ export class Portal {
     }
     return out;
   }
+
+  async createItem(listId, values) {
+    const r = await this.api('POST', 'customlists/items/create', { list_id: listId, ...values }, 'items');
+    if (!r || !r.id) throw new PortalError(`запись не создана: ${JSON.stringify(r).slice(0, 300)}`);
+    return String(r.id);
+  }
+
+  // OAuth-токен текущего пользователя: им Worker проверяет, что запрос пришёл из портала
+  async token() {
+    const ctx = await this.t.frame.getContext();
+    return ctx?.auth?.access_token || null;
+  }
+
+  async me() {
+    try { const u = await this.api('GET', 'core/user/get', null, 'user'); return u?.id ? String(u.id) : null; } catch { return null; }
+  }
 }
 
 function unwrap(d, url) {

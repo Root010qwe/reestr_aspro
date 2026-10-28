@@ -43,6 +43,7 @@ export function normalize(items, cfg) {
       paidDate: isoDate(it[f.paid_date]),
       paidAmount: num(it[f.paid_amount]),
       link: it[f.file_link] || '',
+      hash: it[f.file_hash] || '',
       notes: it[f.notes] || '',
       direction: opt('direction'),
       project: idOf(it[f.project]),

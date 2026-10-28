@@ -1,6 +1,7 @@
 import { DEFAULTS, mergeConfig } from './config.js';
 import { Portal, FrameTransport } from './portal.js';
 import { normalize, summarize, totals, alerts, filterDocs, money, ru, CLOSING, PAYMENT } from './model.js';
+import { initAdd } from './add.js';
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -58,7 +59,7 @@ async function load() {
     renderAll();
     $('boot').hidden = true; $('app').hidden = false;
     const v = location.hash.slice(1);
-    if (['summary', 'registry', 'alerts'].includes(v)) show(v);
+    if (['summary', 'registry', 'alerts', 'add'].includes(v)) show(v);
   } catch (e) {
     $('boot').hidden = false;
     $('boot').innerHTML = `<span class="chip bad">ошибка</span> Не удалось загрузить реестр: ${esc(e.message)}`;
@@ -153,7 +154,7 @@ function renderAll() { renderSummary(); renderRegistry(); renderAlerts(); }
 // ---------- вкладки и события ----------
 function show(view) {
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.dataset.view === view)));
-  for (const v of ['summary', 'registry', 'alerts']) $(`view-${v}`).hidden = v !== view;
+  for (const v of ['summary', 'registry', 'alerts', 'add']) $(`view-${v}`).hidden = v !== view;
 }
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => show(t.dataset.view)));
 
@@ -183,6 +184,8 @@ $('btnCsv').addEventListener('click', () => {
   a.download = `реестр_документов_${new Date().toISOString().slice(0, 10)}.csv`;
   a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 });
+
+initAdd({ cfg: () => cfg, docs: () => docs, portal: () => portal, reload: () => load() });
 
 connect()
   .then((s) => { source = s; $('lnkList').href = `${base}/_module/customlists/view/list/${cfg.list.id}`; if (!base) $('lnkList').hidden = true; return load(); })
