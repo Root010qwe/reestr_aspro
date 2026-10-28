@@ -14,7 +14,7 @@
 ## Развёртывание
 
 1. Выложено на GitHub Pages: репозиторий `Root010qwe/reestr_aspro` (ветка main, корень; тесты не публикуются — в них данные клиента).
-2. Адрес в `manifest.json`: `https://root010qwe.github.io/reestr_aspro/index.html`.
+2. Аспро открывает iframe POST-запросом, а Pages на POST отвечает 405. Поэтому вход идёт через Cloudflare Worker `worker/reestr-entry.js`: он отвечает редиректом 303 на Pages. Адрес в `manifest.json`: `https://reestr-entry.trinos-881.workers.dev/`.
 3. Аспро.Cloud → Приложения → Разработчикам → создать приложение из `manifest.json`, установить.
 4. Выдать доступ к списку «Реестр документов» (настройки списка → Пользователи) тем, кто будет смотреть свод.
 

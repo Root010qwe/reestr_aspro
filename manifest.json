@@ -10,7 +10,7 @@
       "content": {
         "id": "documents_registry",
         "title": "Реестр документов",
-        "iframe": { "src": "https://root010qwe.github.io/reestr_aspro/index.html" }
+        "iframe": { "src": "https://reestr-entry.trinos-881.workers.dev/" }
       },
       "action": { "code": "do.nothing" }
     }
