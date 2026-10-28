@@ -1,8 +1,14 @@
 {
   "schemaVersion": "alpha",
   "scopes": [
-    { "code": "customlists", "permission": "read" },
-    { "code": "user.me", "permission": "read" }
+    {
+      "code": "customlists",
+      "permission": "read"
+    },
+    {
+      "code": "user.me",
+      "permission": "read"
+    }
   ],
   "placements": [
     {
@@ -10,9 +16,26 @@
       "content": {
         "id": "documents_registry",
         "title": "Реестр документов",
-        "iframe": { "src": "https://reestr-entry.trinos-881.workers.dev/" }
+        "iframe": {
+          "src": "https://reestr-entry.trinos-881.workers.dev/"
+        }
       },
-      "action": { "code": "do.nothing" }
+      "action": {
+        "code": "do.nothing"
+      }
+    },
+    {
+      "code": "app.homepage",
+      "content": {
+        "id": "home",
+        "title": "Реестр документов",
+        "iframe": {
+          "src": "https://reestr-entry.trinos-881.workers.dev/"
+        }
+      },
+      "action": {
+        "code": "do.nothing"
+      }
     }
   ],
   "settings": [
@@ -23,7 +46,9 @@
           "id": "config_json",
           "code": "textarea",
           "title": "Конфигурация (JSON). Пусто = настройки по умолчанию (список 8, проекты КазГАУ). Пример: {\"projects\":{\"46\":\"КазГАУ\",\"60\":\"Новый проект\"}}",
-          "attrs": { "placeholder": "{}" }
+          "attrs": {
+            "placeholder": "{}"
+          }
         }
       ]
     }

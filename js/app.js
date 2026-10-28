@@ -24,6 +24,15 @@ async function connect() {
   const App = await waitSdk();
   const frame = await App.initializeFrame();
   base = `${frame.https === false ? 'http' : 'https'}://${frame.domain}`;
+  // из пункта меню приложение открывается в узкой панели — уводим на домашнюю страницу (app.homepage), там вся ширина
+  try {
+    const placement = (await frame.getContext())?.placement?.code;
+    if (placement && placement !== 'app.homepage') {
+      $('btnFull').hidden = false;
+      $('btnFull').addEventListener('click', () => frame.openHomepage({}));
+      frame.openHomepage({});
+    }
+  } catch { /* без домашней страницы остаёмся в панели */ }
   try {
     const raw = await frame.options.get('config_json');
     if (raw) cfg = mergeConfig(cfg, typeof raw === 'string' ? JSON.parse(raw) : raw);
