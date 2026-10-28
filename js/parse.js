@@ -170,7 +170,7 @@ function headNumberDate(text) {
   const m = head.match(RX('(?:№|N)\\s*([\\p{L}\\p{N}][\\p{L}\\p{N}/\\-.]*)\\s+от\\s+([«"]?\\d{1,2}[»"]?\\s+\\p{L}+\\s+\\d{4}|\\d{2}\\.\\d{2}\\.\\d{4})'));
   if (m) return { number: m[1].replace(/[.,]$/, ''), date: parseDate(m[2]) };
   const n = head.match(RX('(?:№|N)\\s*([\\p{L}\\p{N}][\\p{L}\\p{N}/\\-.]*)'));
-  return { number: n ? n[1] : null, date: parseDate(head) };
+  return { number: n && /\d/.test(n[1]) ? n[1] : null, date: parseDate(head) };
 }
 
 const BUYER_ROLES = /^(?:заказчик|покупател|лицензиат|сублицензиат|арендатор|принципал)/i;
