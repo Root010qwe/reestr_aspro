@@ -27,7 +27,8 @@ async function connect() {
   // из пункта меню приложение открывается в узкой панели — уводим на домашнюю страницу (app.homepage), там вся ширина
   try {
     const placement = (await frame.getContext())?.placement?.code;
-    if (placement && placement !== 'app.homepage') {
+    // по ширине: контекст размещения не всегда отличает панель от домашней страницы, а повторный переход перезагрузит её
+    if (placement && placement !== 'app.homepage' && window.innerWidth < 700) {
       $('btnFull').hidden = false;
       $('btnFull').addEventListener('click', () => frame.openHomepage({ blank: false }));
       frame.openHomepage({ blank: false });
