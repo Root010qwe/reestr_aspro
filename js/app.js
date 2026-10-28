@@ -31,7 +31,10 @@ async function connect() {
     if (placement && placement !== 'app.homepage' && window.innerWidth < 700) {
       $('btnFull').hidden = false;
       $('btnFull').addEventListener('click', () => frame.openHomepage({ blank: false }));
-      frame.openHomepage({ blank: false });
+      // не чаще раза в 30 с: в узком окне домашняя страница тоже узкая, без этого переход зациклится
+      let last = 0;
+      try { last = Number(sessionStorage.getItem('reestr_full_at')) || 0; sessionStorage.setItem('reestr_full_at', String(Date.now())); } catch { /* хранилище недоступно */ }
+      if (Date.now() - last > 30000) frame.openHomepage({ blank: false });
     }
   } catch { /* без домашней страницы остаёмся в панели */ }
   try {
