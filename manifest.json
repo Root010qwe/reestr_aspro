@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "alpha",
+  "scopes": [
+    { "code": "customlists", "permission": "read" },
+    { "code": "user.me", "permission": "read" }
+  ],
+  "placements": [
+    {
+      "code": "navigation.mainmenu.item",
+      "content": {
+        "id": "documents_registry",
+        "title": "Реестр документов",
+        "iframe": { "src": "https://root010qwe.github.io/reestr_aspro/index.html" }
+      },
+      "action": { "code": "do.nothing" }
+    }
+  ],
+  "settings": [
+    {
+      "title": "Реестр документов",
+      "options": [
+        {
+          "id": "config_json",
+          "code": "textarea",
+          "title": "Конфигурация (JSON). Пусто = настройки по умолчанию (список 8, проекты КазГАУ). Пример: {\"projects\":{\"46\":\"КазГАУ\",\"60\":\"Новый проект\"}}",
+          "attrs": { "placeholder": "{}" }
+        }
+      ]
+    }
+  ],
+  "user_settings": [],
+  "webhooks": []
+}

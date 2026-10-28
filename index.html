@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Реестр документов</title>
+<style>
+  :root {
+    --bg: #f5f6fa; --card: #fff; --line: #e6e8ef; --text: #1f2330; --muted: #7a8194;
+    --blue: #3f5ef7; --blue-soft: #eef1ff; --green: #1e9e62; --green-soft: #e8f7ef;
+    --amber: #b7791f; --amber-soft: #fff6e0; --red: #d64545; --red-soft: #fdecec; --grey-soft: #f0f1f5;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.45 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--text); background: var(--bg); }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 20px 20px 40px; }
+  header { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  h1 { font-size: 20px; font-weight: 600; margin: 0; }
+  .sub { color: var(--muted); font-size: 13px; }
+  .grow { flex: 1; min-width: 160px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; margin-bottom: 14px; min-width: 0; }
+  .card h2 { font-size: 15px; font-weight: 600; margin: 0 0 12px; display: flex; gap: 8px; align-items: center; }
+  .btn { border: 1px solid var(--line); background: #fff; color: var(--text); border-radius: 8px; padding: 7px 12px; font: inherit; cursor: pointer; text-decoration: none; display: inline-block; }
+  .btn:hover { border-color: #c9cede; }
+  .btn:focus-visible, .tab:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 14px; flex-wrap: wrap; }
+  .tab { border: 0; background: none; font: inherit; padding: 9px 14px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .tab[aria-selected="true"] { color: var(--text); border-bottom-color: var(--blue); font-weight: 500; }
+  .tab .chip { margin-left: 6px; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-bottom: 14px; }
+  .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .kpi .label { color: var(--muted); font-size: 12px; }
+  .kpi .value { font-size: 22px; font-weight: 600; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .kpi .hint { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .kpi.bad .value { color: var(--red); } .kpi.warn .value { color: var(--amber); }
+  .scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 500; font-size: 12px; white-space: nowrap; position: sticky; top: 0; background: var(--card); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.nowrap { white-space: nowrap; }
+  tr.click { cursor: pointer; } tr.click:hover td { background: #fafbff; }
+  tfoot td { font-weight: 600; border-bottom: 0; }
+  .muted { color: var(--muted); }
+  .small { font-size: 12px; }
+  .chip { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+  .chip.ok { background: var(--green-soft); color: var(--green); }
+  .chip.warn { background: var(--amber-soft); color: var(--amber); }
+  .chip.bad { background: var(--red-soft); color: var(--red); }
+  .chip.info { background: var(--blue-soft); color: var(--blue); }
+  .chip.grey { background: var(--grey-soft); color: var(--muted); }
+  .bar { height: 6px; border-radius: 3px; background: var(--grey-soft); overflow: hidden; margin-top: 6px; min-width: 80px; }
+  .bar > i { display: block; height: 100%; background: var(--blue); }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+  .filters select, .filters input[type=search], .filters input[type=date] { border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; font: inherit; background: #fff; max-width: 100%; }
+  .filters input[type=search] { min-width: 220px; flex: 1; }
+  .filters label { display: inline-flex; gap: 6px; align-items: center; color: var(--muted); }
+  .notes { max-width: 340px; color: var(--muted); font-size: 12px; }
+  .alert { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .alert:last-child { border-bottom: 0; }
+  .alert > .chip { min-width: 92px; text-align: center; }
+  .alert .who { color: var(--muted); font-size: 12px; }
+  .empty { color: var(--muted); padding: 18px 0; text-align: center; }
+  .spinner { width: 14px; height: 14px; border: 2px solid var(--blue-soft); border-top-color: var(--blue); border-radius: 50%; animation: spin .8s linear infinite; display: inline-block; vertical-align: -2px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+  a { color: var(--blue); text-decoration: none; } a:hover { text-decoration: underline; }
+  @media (max-width: 640px) { .wrap { padding: 14px 12px 30px; } .kpi .value { font-size: 19px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="grow">
+      <h1>Реестр документов</h1>
+      <div class="sub" id="source">Подключаюсь к порталу…</div>
+    </div>
+    <button class="btn" id="btnRefresh" type="button">Обновить</button>
+    <a class="btn" id="lnkList" target="_blank" rel="noopener">Открыть список</a>
+  </header>
+
+  <div id="boot" class="card"><span class="spinner"></span> Загружаю реестр…</div>
+
+  <div id="app" hidden>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-view="summary" aria-selected="true">Свод по договорам</button>
+      <button class="tab" role="tab" data-view="registry" aria-selected="false">Реестр <span class="chip grey" id="cntDocs">0</span></button>
+      <button class="tab" role="tab" data-view="alerts" aria-selected="false">Что проверить <span class="chip warn" id="cntAlerts">0</span></button>
+    </div>
+
+    <section id="view-summary">
+      <div class="kpis" id="kpis"></div>
+      <div class="card">
+        <h2>Договоры и расчёты <span class="sub">закрыто — УПД и акты, оплачено — платёжки; нажмите строку, чтобы открыть документы</span></h2>
+        <div class="filters">
+          <select id="sProject" aria-label="Проект"></select>
+          <select id="sDirection" aria-label="Направление"><option value="">Доходные и расходные</option><option>Доходный</option><option>Расходный</option></select>
+        </div>
+        <div class="scroll"><table>
+          <thead><tr><th>Контрагент</th><th>Договор</th><th class="num">Сумма договора</th><th class="num">Закрыто</th><th class="num">Оплачено</th><th class="num">Расчёты</th><th class="num">Осталось закрыть</th></tr></thead>
+          <tbody id="groups"></tbody>
+        </table></div>
+      </div>
+    </section>
+
+    <section id="view-registry" hidden>
+      <div class="card">
+        <div class="filters">
+          <input type="search" id="fSearch" placeholder="Поиск: номер, контрагент, ИНН, замечания" aria-label="Поиск">
+          <select id="fProject" aria-label="Проект"></select>
+          <select id="fCp" aria-label="Контрагент"></select>
+          <select id="fType" aria-label="Тип документа"></select>
+          <select id="fStatus" aria-label="Статус"></select>
+          <label>с <input type="date" id="fFrom"></label>
+          <label>по <input type="date" id="fTo"></label>
+          <label><input type="checkbox" id="fNoFile"> без файла</label>
+          <button class="btn" id="btnReset" type="button">Сбросить</button>
+          <button class="btn" id="btnCsv" type="button">Выгрузить CSV</button>
+        </div>
+        <div class="scroll"><table>
+          <thead><tr><th>Дата</th><th>Документ</th><th>Тип</th><th class="num">Сумма</th><th>Статус</th><th>Подписан</th><th>Файл</th><th>Замечания</th></tr></thead>
+          <tbody id="docs"></tbody>
+          <tfoot><tr><td colspan="3" id="docsCount"></td><td class="num" id="docsSum"></td><td colspan="4"></td></tr></tfoot>
+        </table></div>
+      </div>
+    </section>
+
+    <section id="view-alerts" hidden>
+      <div class="card"><div id="alertList"></div></div>
+    </section>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@aspro-cloud/miniapp-jssdk@0.0.5/dist/miniapp-jssdk.min.js"
+        onerror="this.remove();var s=document.createElement('script');s.src='https://unpkg.com/@aspro-cloud/miniapp-jssdk@0.0.5/dist/miniapp-jssdk.min.js';document.head.appendChild(s)"></script>
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>
